@@ -1,34 +1,61 @@
-<!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
-</head>
-<body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+{% extends 'base.html' %}
+
+{% block title %}Chat Room{% endblock title %}
+
+{% block container_content %}
+    <div id="chat-log"></div><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
+    <div id="chat-spinner" class="spinner-border" role="status" >
+      <span class="sr-only"></span>
+    </div>
     {{ room_name|json_script:"room-name" }}
+{% endblock container_content %}
+
+{% block page_javascript %}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const sockDrawer = {}
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
-        );
+        function startWebSocket() {
+            var chatSocket = new WebSocket(
+                'ws://'
+                + window.location.host
+                + '/ws/chat/'
+                + roomName
+                + '/'
+            );
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                            console.log(data);
+                username = data.username;
+                user_pk = data.user_pk;
+                message_id = data.message_id;
+                message_type = data.type;
+                if (message_type == 'chat.message') {
+                    var user_elem = $("<span></span>").text(data.username).data('user_pk', data.user_pk).addClass("username-"+user_pk+"-display");
+                    var break_elem = $("<span></span>").text(": ");
+                    var message_elem = $("<span></span>").text(data.message).data('message_id', data.message_id);
+                    var entry = $("<p></p>")
+                    entry.append(user_elem).append(user_elem).append(break_elem).append(message_elem);
+                    $('#chat-log').append(entry);
+                } else if (message_type == 'chat.name_change') {
+                    $('.username-'+user_pk+'-display').text(username);
+                    $('#nameChangeModal').modal('hide');
+                }
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+            };
+            chatSocket.onclose = function(e) {
+                $("#chat-spinner").show()
+                console.error('Chat socket closed unexpectedly');
+                startWebSocket()
+            };
+            sockDrawer.chatSocket = chatSocket
+            $("#chat-spinner").hide()
+        }
+
+        startWebSocket();
 
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
@@ -40,11 +67,21 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
+            sockDrawer.chatSocket.send(JSON.stringify({
+                'type': 'message',
+                'message': message,
             }));
             messageInputDom.value = '';
         };
+        document.querySelector('#new-username-submit').onclick = function(e) {
+            console.log('submitting new username')
+            const usernameInputDom = document.querySelector('#new-username-input');
+            const username = usernameInputDom.value;
+            sockDrawer.chatSocket.send(JSON.stringify({
+                'type': 'name_change',
+                'username': username,
+                'message': '',
+            }));
+        };
     </script>
-</body>
-</html>
+{% endblock page_javascript %}
