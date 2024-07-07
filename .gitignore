@@ -1,2 +1,4 @@
 .idea
 .envauto
+*.sqlite3
+**/__pycache__/
