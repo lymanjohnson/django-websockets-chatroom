@@ -1,10 +1,10 @@
-#Barebones Chatroom Utilizing Django and Websockets
+# Barebones Chatroom Utilizing Django and Websockets
 
-##Prerequisites
+## Prerequisites
 
 - Docker
 
-##Installation
+## Installation
 
 In your terminal, navigate to an empty folder and run the following command:
 
@@ -17,7 +17,7 @@ docker compose up
 
 Then, in your browser, navigate to http://localhost:8000/chat/
 
-##General Notes
+## General Notes
 - User authentication and storage is handled synchronously using basic django session-based authentication.
 - You can use another browser on the same machine to login in as multiple users.
   - Some browsers may also allow you to have multiple windows open at the same time with separate sessions for each window.
