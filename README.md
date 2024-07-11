@@ -26,3 +26,9 @@ Then, in your browser, navigate to http://localhost:8000/chat/
 - The chat logs are completely ephemeral in this implementation. They are not stored in any persistent storage, nor are they stored in the browser local storage. 
   - Refreshing the page will clear the chat log
   - You will not see any messages that were sent while you were not currently in a chat room
+
+## Attributions
+
+- This chatroom is based heavily on the Django Channels tutorial chatroom found here: https://channels.readthedocs.io/en/3.x/tutorial/index.html
+- Login and Signup Screens are based on Bootstrap 5 Example Templates
+- AI tools were consulted during the creation of this app, particularly while writing Dockerfile and compose.yaml
