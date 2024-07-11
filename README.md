@@ -1,4 +1,4 @@
-# Barebones Chatroom Utilizing Django and Websockets
+# Chatroom Utilizing Django and Websockets
 
 ## Prerequisites
 
