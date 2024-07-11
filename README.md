@@ -11,13 +11,18 @@ In your terminal, navigate to an empty folder and run the following command:
 ```
 git clone git@github.com:lymanjohnson/django-websockets-chatroom.git
 cd django-websockets-chatroom
-
+docker compose build --no-cache
+docker compose up
 ```
 
-In a separate terminal window, run this:
+Then, in your browser, navigate to http://localhost:8000/chat/
 
-```
-docker run --rm -p 6379:6379 redis:7
-
-```
-
+##General Notes
+- User authentication and storage is handled synchronously using basic django session-based authentication.
+- You can use another browser on the same machine to login in as multiple users.
+  - Some browsers may also allow you to have multiple windows open at the same time with separate sessions for each window.
+- The user database is stored in a sqlite file. Rebuilding the container from scratch will clear the database.
+- Chat functionality is handled asynchronously through websockets and redis. 
+- The chat logs are completely ephemeral in this implementation. They are not stored in any persistent storage, nor are they stored in the browser local storage. 
+  - Refreshing the page will clear the chat log
+  - You will not see any messages that were sent while you were not currently in a chat room
