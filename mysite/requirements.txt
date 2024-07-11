@@ -2,5 +2,3 @@ Django==5.0.6
 channels[daphne]
 channels_redis==4.2.0
 selenium==4.22.0
-django-crispy-forms==2.2
-crispy-bootstrap5==2024.2

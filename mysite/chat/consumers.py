@@ -47,8 +47,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        from pprint import pprint
-        pprint(text_data_json)
         received_type = text_data_json["type"]
         message = text_data_json["message"]
         username = self.scope['user'].username
@@ -61,9 +59,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             event_type = 'chat.name_change'
             new_username = text_data_json['username']
             message_username = await self.change_username(self.scope['user'], new_username)
-        print(f"message: {message}")
-        print(f"username: {username}")
-        print(f"user_pk: {user_pk}")
 
         # Send message to room group
         await self.channel_layer.group_send(

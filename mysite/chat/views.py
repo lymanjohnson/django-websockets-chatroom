@@ -1,16 +1,7 @@
-from django.conf import settings
 from django.shortcuts import render, redirect, reverse
 from .forms import SignupForm
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.views import LoginView
-from django.views.generic import FormView
+from django.contrib.auth import authenticate, logout, login
 
-
-# class SignupView(FormView):
-#     template_name = "registration/signup.html"
-#     form_class = UserCreationForm
-#     success_url = "/chat/"
 
 def logout_view(request):
     logout(request)
@@ -23,6 +14,7 @@ def signup(request):
         if form.is_valid():
             new_user = form.save()
             authenticate(new_user)
+            login(request, new_user)
             return redirect("/chat/")
     else:
         form = SignupForm()
